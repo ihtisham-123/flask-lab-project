@@ -1,10 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Welcome to Flask Lab Project!"
+    return render_template('index.html')
 
 @app.route('/health')
 def health():
