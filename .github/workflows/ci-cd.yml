@@ -19,17 +19,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd FA22-BSE-113_backend/main
+          cd main
           pip install -r requirements.txt
 
       - name: Run tests
         run: |
-          cd FA22-BSE-113_backend/main
+          cd main
           python -m pytest tests
 
       - name: Build Docker image
         run: |
-          cd FA22-BSE-113_backend/main
+          cd main
           docker build -t flask-backend .
 
       # Optional: Push Docker image to Docker Hub
