@@ -1,10 +1,17 @@
+
+from flask import Flask, request, jsonify, render_template
+
+app = Flask(_name_)
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/')
-def home():
-    return "Welcome to Flask Lab Project!"
+
 
 @app.route('/health')
 def health():
@@ -19,5 +26,8 @@ def data():
 def cicd_check():
     return "CI/CD is working!", 200
 
+
+
 if __name__ == "__main__":
+
     app.run(host="0.0.0.0", port=5000)
