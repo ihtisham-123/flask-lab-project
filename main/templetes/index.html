@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Flask Lab - Simple Frontend</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;padding:18px;background:#f6f7fb}
+  .box{background:#fff;padding:14px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.08);max-width:760px;margin:10px auto}
+  button,input,textarea{font:inherit;padding:8px;margin:6px 0;border:1px solid #ccc;border-radius:4px}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  pre{background:#f3f4f6;padding:10px;border-radius:4px;overflow:auto}
+</style>
+</head>
+<body>
+  <div class="box">
+    <h2>Flask Lab - Simple Frontend</h2>
+
+    <div>
+      <div class="row">
+        <button id="btnRoot">GET /</button>
+        <button id="btnHealth">GET /health</button>
+        <button id="btnCICD">GET /cicd-check</button>
+      </div>
+      <div id="respRoot"><pre></pre></div>
+    </div>
+
+    <hr>
+
+    <div>
+      <h3>POST /data</h3>
+      <form id="dataForm">
+        <label>JSON payload (example):</label>
+        <textarea id="jsonPayload" rows="6">{"message":"hello","count":1}</textarea>
+        <div class="row">
+          <button type="submit">Send</button>
+          <button type="button" id="btnClear">Clear</button>
+        </div>
+      </form>
+      <div id="respData"><pre></pre></div>
+    </div>
+
+    <p style="margin-top:12px;color:#666">Backend expected at <code>http://localhost:5000</code></p>
+  </div>
+
+<script>
+const API = 'http://localhost:5000';
+
+function show(elSelector, data){
+  const el = document.querySelector(elSelector + ' pre');
+  el.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+}
+
+async function call(path, opts){
+  try{
+    const res = await fetch(API + path, opts);
+    let bodyText;
+    const ct = res.headers.get('content-type') || '';
+    if(ct.includes('application/json')) bodyText = await res.json();
+    else bodyText = await res.text();
+    return { ok: res.ok, status: res.status, body: bodyText };
+  }catch(e){
+    return { ok:false, error: e.message || String(e) };
+  }
+}
+
+document.getElementById('btnRoot').addEventListener('click', async () => {
+  show('#respRoot', 'Loading...');
+  const r = await call('/');
+  show('#respRoot', r);
+});
+
+document.getElementById('btnHealth').addEventListener('click', async () => {
+  show('#respRoot', 'Loading...');
+  const r = await call('/health');
+  show('#respRoot', r);
+});
+
+document.getElementById('btnCICD').addEventListener('click', async () => {
+  show('#respRoot', 'Loading...');
+  const r = await call('/cicd-check');
+  show('#respRoot', r);
+});
+
+document.getElementById('dataForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  let payloadText = document.getElementById('jsonPayload').value;
+  let payload;
+  try{ payload = JSON.parse(payloadText); }catch(err){
+    show('#respData', { error: 'Invalid JSON: ' + err.message });
+    return;
+  }
+  show('#respData', 'Sending...');
+  const r = await call('/data', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  show('#respData', r);
+});
+
+document.getElementById('btnClear').addEventListener('click', () => {
+  document.getElementById('jsonPayload').value = '';
+  show('#respData', '');
+});
+</script>
+</body>
+</html>
