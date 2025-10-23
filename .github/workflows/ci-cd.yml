@@ -18,19 +18,16 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: |
-          cd main
-          pip install -r requirements.txt
+        working-directory: main
+        run: pip install -r requirements.txt
 
       - name: Run tests
-        run: |
-          cd main
-          python -m pytest tests
+        working-directory: main
+        run: python -m pytest tests
 
       - name: Build Docker image
-        run: |
-          cd main
-          docker build -t flask-backend .
+        working-directory: main
+        run: docker build -t flask-backend .
 
       # Optional: Push Docker image to Docker Hub
       # - name: Login to Docker Hub
