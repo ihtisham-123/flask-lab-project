@@ -1,1 +1,36 @@
-hhjgjhgjhhuuuhu
+Steps to remove the 'ihtisham-123' / wrong saved credentials and push with the correct account:
+
+1) Check current Git name (local and global)
+   git config --local user.name
+   git config --global user.name
+
+2) Unset the name you don't want
+   # remove global config
+   git config --global --unset user.name
+   git config --global --unset user.email
+   # remove repo (local) config if present
+   git config --local --unset user.name
+   git config --local --unset user.email
+
+3) Remove saved credentials (Windows)
+   - Open Control Panel → Credential Manager → Windows Credentials
+   - Find entries for "git:https://github.com" or similar and remove them.
+   OR (if Git Credential Manager is installed)
+   printf "url=https://github.com\n" | git credential-manager-core erase
+   (or)
+   printf "url=https://github.com\n" | git credential-manager erase
+
+4) Update remote URL if you want to point to a different GitHub account or use SSH:
+   # HTTPS (your-username)
+   git remote set-url origin https://github.com/<your-username>/flask-lab-project.git
+   # or SSH
+   git remote set-url origin git@github.com:<your-username>/flask-lab-project.git
+
+5) Re-attempt push and authenticate with the correct account (or PAT)
+   git push --set-upstream origin fa22-bse-113-backend
+
+Notes:
+- The "Permission denied to umama123-ui" means your stored credentials belong to another GitHub user; removing stored credentials forces Git to prompt again.
+- If you prefer to keep global user.name but use a different repo identity, set the repo-local config:
+   git config user.name "Desired Name"
+   git config user.email "you@example.com"
